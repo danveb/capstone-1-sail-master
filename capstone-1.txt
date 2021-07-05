@@ -1,0 +1,15 @@
+Sail-Master (OpenSeas)
+
+1. I find beginner water sports' enthusiasts require experience and heavy planning to be able to enjoy a day outside on the water. This app will allow beginner, intermediate and expert-level sailors to have a handy tool to prepare for a voyage and enjoy their best time on the water. 
+
+2. Users will water sports' enthusiasts. 
+
+3. I want to use an API to check weather conditions, list of sail clubs in the US. 
+
+4. 
+    a) See capstone-1-schema.png https://dbdiagram.io/d/60d7dd54dd6a59714821076d
+    b) Limited number of API calls could pose a potential problem to the application. 
+    c) Sensitive information such as names, passwords will be encrypted 
+    d) See sail-master-notes.txt 
+    e) See sail-master-notes.txt 
+    f) TBA 

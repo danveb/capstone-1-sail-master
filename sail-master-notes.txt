@@ -1,0 +1,13 @@
+Sail-Master Notes 
+
+Sail-Master is an application for experienced sailors water sports’ enthusiasts that has a common goal to share the joy in sailing. This application allows to plan ahead sailing clubs and checks weather conditions to make the best plan available. 
+
+Application will allow users to register their profile and based on experience level it will give an intelligent recommendation whether it’s safe to sail or not. Provide a list of sailing houses nearby where enthusiasts can be redirected to websites where a sailing school is available. 
+In case user wants to add a new sailing club it can be requested via email or added via a link to request adding a club or institution.
+
+Details to show: sunrise/sunset, min and max temperature, wind speed, UV index, water temperature and other climate conditions will be displayed to help the sailor. It can provide warnings about special weather conditions such as tornadoes, hurricanes or thunderstorms nearby. 
+
+	0.	Experienced sailors:- Able to sail despite bad weather and adversary conditions- Wind speed: 15-20 knots 
+	0.	Enthusiast level: - Able to sail only on “comfortable” weather conditions- “Comfortable” wind speed: 5-12 knots 
+	0.	Absolute beginner level: - Able to sail only on “ideal” weather conditions - “Ideal” wind speed: under 10 knots - Best wind speed is one that allows to navigate the boat safely, without exceeding the hull speed of the boat
+	0.	Always provide a checklist when ready to make a sail
