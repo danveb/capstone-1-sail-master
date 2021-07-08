@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}User Registration{% endblock%}
+
+{% block content %}
+
+<h1 class="display-1">Register</h1>
+<p class="lead">Register to Join our Application. Already a User? <a href="/login">Login Here</a></p>
+
+<!-- Register Form -->
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    {% for field in form 
+        if field.widget.input_type != 'hidden' %}
+    <p>
+        {{field.label}}
+        {{field(class_="form-control")}}
+
+        <!-- error -->
+        {% for error in field.errors %}
+        <span class="form-text text-danger">{{error}}</span>
+        {% endfor %}
+    </p>
+    {% endfor %}
+
+    <button class="btn btn-success">Register</button>
+
+</form>
+
+{% endblock %}
