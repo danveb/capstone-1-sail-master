@@ -5,5 +5,4 @@ $ pip3 freeze > requirements.txt
 $ createdb sail_master 
 $ flask run 
 
-Add CSV to FlaskSqlalchemy 
-$ (venv) pgcsv --db postgresql://localhost/sail_master boathouse marinas-list.csv
+Add CSV correctly to db (refer to seed.py)
