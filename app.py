@@ -33,12 +33,10 @@ def add_user_to_g():
     else:
         g.user = None
 
-
 def do_login(user):
     """Log in user."""
 
     session[CURRENT_USER] = user.id
-
 
 def do_logout():
     """Logout user."""
