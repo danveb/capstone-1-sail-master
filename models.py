@@ -65,6 +65,7 @@ class Club(db.Model):
     zip = db.Column(db.Integer, nullable=False)
     lat = db.Column(db.Numeric, nullable=True)
     lon = db.Column(db.Numeric, nullable=True)
+    tel = db.Column(db.Text, nullable=True) 
     url = db.Column(db.Text, nullable=True)
     # user = db.relationship('User', backref='club', cascade='all, delete')
     # voyage = db.relationship('Voyage', backref='club', cascade='all, delete')
