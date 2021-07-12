@@ -21,7 +21,7 @@ debug = DebugToolbarExtension(app)
 CURRENT_USER = 'current_user' 
 
 ##############################################################################
-# User signup/login/logout
+# User register/login/logout
 
 @app.before_request
 def add_user_to_g():
@@ -105,3 +105,12 @@ def logout_user():
     session.pop(CURRENT_USER) 
     flash('Successfully logged out', 'info')
     return redirect('/login') 
+
+##############################################################################
+# User about 
+
+# GET /about 
+@app.route('/about')
+def show_about():
+    return render_template('about.html') 
+
