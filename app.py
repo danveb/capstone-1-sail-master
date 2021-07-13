@@ -4,8 +4,8 @@ import requests
 from flask import Flask, render_template, redirect, flash, session, g # Flask Global 
 from flask_debugtoolbar import DebugToolbarExtension 
 from sqlalchemy.exc import IntegrityError 
-from forms import RegisterForm, LoginForm 
-from models import db, connect_db, User, Club
+from forms import RegisterForm, LoginForm, VoyageForm 
+from models import db, connect_db, User, Club, Voyage 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sail_master'
@@ -80,8 +80,8 @@ def register_user():
 # GET & POST /login
 @app.route('/login', methods=["GET", "POST"]) 
 def login_user():
-    if "user_id" in session: 
-        return redirect(f"/users/{session['user_id']}")
+    # if "user_id" in session: 
+    #     return redirect(f"/users/{session['user_id']}")
     # LoginForm instance 
     form = LoginForm() 
     if form.validate_on_submit():
@@ -90,11 +90,11 @@ def login_user():
         # call authenticate (classmethod)
         user = User.authenticate(username, password) 
         if user:
-            do_login(user) 
-            flash(f'Welcome back, {user.username}')
-            return redirect(f'/users/{user.username}')
-
+            do_login(user)
+            flash(f'Hello, {user.username}', 'success')
+            return redirect(f'users/{user.id}')
         flash('Invalid credentials', 'danger')
+        return redirect('/login') 
 
     # GET Login Form
     return render_template('login.html', form=form) 
@@ -102,15 +102,54 @@ def login_user():
 # GET /logout 
 @app.route('/logout')
 def logout_user():
-    session.pop(CURRENT_USER) 
+    do_logout() 
     flash('Successfully logged out', 'info')
-    return redirect('/login') 
+    return redirect('/') 
 
 ##############################################################################
-# User about 
+# User details 
 
-# GET /about 
-@app.route('/about')
-def show_about():
-    return render_template('about.html') 
+# GET /userdetail
+@app.route('/users/<int:user_id>') 
+def user(user_id):
+    user = User.query.get_or_404(user_id)
+    return render_template('user.html', user=user)
 
+##############################################################################
+# VoyageForm 
+
+# GET & POST /voyage 
+@app.route('/voyage', methods=["GET", "POST"]) 
+def voyage(): 
+    """Display Voyage Form"""
+    clubs_choices = [(club.id, club.name) for club in Club.query.order_by('name').all()]
+
+    form = VoyageForm() 
+    form.start_point.choices = clubs_choices 
+    form.end_point.choices = clubs_choices
+    # form.end_point.choices = clubs_choices 
+    if form.validate_on_submit():
+        start_point = form.start_point.data 
+        new_voyage = Voyage(start_point=start_point)
+        db.session.add(new_voyage)
+        db.session.commit() 
+        flash('Voyage Created!', 'success')
+        return render_template('result.html')
+
+    return render_template('voyage.html', form=form)     
+
+##############################################################################
+# Club details 
+
+# GET /clubs
+@app.route('/clubs')
+def all_clubs():
+    """Display Clubs"""
+    clubs = Club.query.order_by(Club.name).all() 
+    return render_template('clubs.html', clubs=clubs)
+
+@app.route('/clubdetails/<int:club_id>')
+def each_club(club_id):
+    """Display Each Club"""
+    club = Club.query.get_or_404(club_id)
+    return render_template('clubdetails.html', club=club)
