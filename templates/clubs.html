@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Sailing Clubs</h1>
+
+<ul>
+    {% for club in clubs %}
+    <li><a href="clubdetails/{{ club.id }}">{{ club.name }}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
