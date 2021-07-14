@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h1 class="display-1">Register</h1>
+<h5 class="display-5">Register</h5>
 <p class="lead">Register to Join Sail-Master. Already a User? <a href="/login">Login Here</a></p>
 
 <!-- Register Form -->
@@ -12,7 +12,7 @@
 
     {% for field in form 
         if field.widget.input_type != 'hidden' %}
-    <p>
+    <p class="lead">
         {{field.label}}
         {{field(class_="form-control")}}
 
