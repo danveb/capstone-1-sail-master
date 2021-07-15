@@ -18,9 +18,8 @@ class User(db.Model):
     email = db.Column(db.String(20), unique=True, nullable=False)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False) 
-    # Relationship 
-    # club = db.relationship('Club', backref='user', cascade='all, delete') 
-    # voyage = db.relationship('Voyage', backref='user', cascade='all, delete') 
+    # Relationships
+    voyage = db.relationship('Voyage', backref='users', cascade='all') 
 
     # classmethod (register) -> Flask-Bcrypt
     @classmethod
@@ -48,11 +47,15 @@ class User(db.Model):
 
 class Voyage(db.Model):
     """Voyage"""
-    __tablename__ = 'voyages'
+    __tablename__ = 'voyage'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    # user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    # club_name = db.Column(db.Integer, db.ForeignKey('clubs.name'))
-
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    start_point = db.Column(db.Integer, db.ForeignKey('clubs.id'))
+    end_point = db.Column(db.Integer, db.ForeignKey('clubs.id')) 
+    # Relationships
+    user = db.relationship('User', foreign_keys=user_id) 
+    start = db.relationship('Club', foreign_keys=start_point)
+    end = db.relationship('Club', foreign_keys=end_point) 
 
 class Club(db.Model):
     """Club"""
@@ -67,6 +70,3 @@ class Club(db.Model):
     lon = db.Column(db.Numeric, nullable=True)
     tel = db.Column(db.Text, nullable=True) 
     url = db.Column(db.Text, nullable=True)
-    # user = db.relationship('User', backref='club', cascade='all, delete')
-    # voyage = db.relationship('Voyage', backref='club', cascade='all, delete')
-
