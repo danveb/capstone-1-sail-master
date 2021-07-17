@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h5 class="display-5">{{ club.name }}</h5>
+<p class="lead">{{ club.address }}<br>
+{{ club.city }}, {{ club.state}} {{ club.zip }}<br>
+{{ club.tel }}<br>
+<a href="http://{{ club.url }}">{{ club.url }}</a>
+</p>
+
+<h6 class="display-6">Coordinates</h6>
+<p class="lead">Latitude: {{ club.lat}}<br>
+Longitude: {{ club.lon}}</p>
+
+<p class="lead"><i>Happy Sailing!</i></p>
+
+{% endblock %}
