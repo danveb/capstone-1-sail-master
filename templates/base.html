@@ -7,9 +7,11 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet"
     href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <script src="https://unpkg.com/jquery"></script>
     <!-- <script src="https://unpkg.com/popper"></script> -->
-    <!-- <script src="https://unpkg.com/bootstrap"></script> -->
+    <script src="https://unpkg.com/bootstrap"></script>
 
 </head>
 <body>
@@ -22,19 +24,14 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto">
+                <ul class="lead navbar-nav ml-auto">
                     <li class="nav-item active">
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about">About</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="/clubs">Clubs</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/userdetail/{{ g.user.id }}">My Account</a>
-                    </li>
+
                     {% if not g.user %}
                     <li class="nav-item">
                         <a class="nav-link" href="/register">Register</a>
@@ -43,6 +40,12 @@
                         <a class="nav-link" href="/login">Login</a>
                     </li>
                     {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/voyage">Voyage</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/{{ g.user.id }}">My Account</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
                     </li>
@@ -55,7 +58,7 @@
 
     <div class="container" style="margin-top: 2em">
         <!-- Flash Message Category! -->
-        {% for category, msg in get_flashed_messages() %}
+        {% for category, msg in get_flashed_messages(with_categories=True) %}
         <div class="alert alert-{{ category }}">{{ msg }}</div>
         {% endfor %}
     
