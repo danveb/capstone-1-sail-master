@@ -50,9 +50,8 @@ class Voyage(db.Model):
     __tablename__ = 'voyage'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    start_point = db.Column(db.Integer, db.ForeignKey('clubs.id'))
-    end_point = db.Column(db.Integer, db.ForeignKey('clubs.id')) 
-    # Relationships
+    start_point = db.Column(db.Integer, db.ForeignKey('clubs.id')) # OK
+    end_point = db.Column(db.Integer, db.ForeignKey('clubs.id')) # OK
     user = db.relationship('User', foreign_keys=user_id) 
     start = db.relationship('Club', foreign_keys=start_point)
     end = db.relationship('Club', foreign_keys=end_point) 
