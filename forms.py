@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm 
-from wtforms import StringField, PasswordField # username, password 
-from wtforms.validators import InputRequired, Length # for required 
+from wtforms import StringField, PasswordField, SelectField # username, password, selectfield
+from wtforms.validators import InputRequired, Length # for required
 
 # RegisterForm 
 class RegisterForm(FlaskForm):
@@ -16,3 +16,9 @@ class LoginForm(FlaskForm):
     # fields 
     username = StringField('Username', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
+
+#VoyageForm
+class VoyageForm(FlaskForm):
+    # fields 
+    start_point = SelectField('Starting Point', coerce=int, validators=[InputRequired()])
+    end_point = SelectField('Ending Point', coerce=int, validators=[InputRequired()]) 
