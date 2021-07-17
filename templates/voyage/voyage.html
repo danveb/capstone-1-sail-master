@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <h5 class="display-5">Create Your Voyage</h5>
+    <!-- Voyage Form -->
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        {% for field in form 
+            if field.widget.input_type != 'hidden' %}
+        <p>
+            {{field.label}}
+            {{field(class_="form-control")}}
+
+            <!-- error -->
+            {% for error in field.errors %}
+            <span class="form-text text-danger">{{error}}</span>
+            {% endfor %}
+        </p>
+        {% endfor %}
+
+        <button class="btn btn-success">Submit</button>
+
+    </form>
+
+</div>
+
+<br>
+
+<div class="container">
+    <h5 class="display-5">Voyage Details</h5>
+    <table class="table table-striped ">
+      <thead class="thead-dark">
+        <th>Voyage #</th>
+        <th>Start Point</th>
+        <th>End Point</th>
+        <th>View</th>
+        <th>Delete</th>
+      </thead>
+      <tbody>
+        {% for voyage in voyages %}
+        <tr>
+          <td>{{voyage.id}}</td>
+          <td>{{voyage.start.name}}</td>
+          <td>{{voyage.end.name}}</td>
+          <td><a href="/voyage/{{voyage.id}}"><i class="far fa-check-circle"></i></a></td>
+          <td><a href="/voyage/{{voyage.id}}"><i class="far fa-trash-alt"></i></a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+{% endblock %}
