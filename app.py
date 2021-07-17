@@ -145,7 +145,6 @@ def voyage():
     voyages = (Voyage
                 .query
                 .order_by(Voyage.id)
-                .limit(100)
                 .all())
     return render_template('voyage/voyage.html', form=form, voyages=voyages) 
 
