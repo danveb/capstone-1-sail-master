@@ -45,7 +45,7 @@ def do_logout():
         del session[CURRENT_USER]
 
 @app.route('/')
-def home():
+def home_page():
     return render_template('index.html')
 
 # GET/POST /register
@@ -69,13 +69,13 @@ def register_user():
             db.session.commit()
         except IntegrityError:
             flash('Username already taken', 'danger')
-            return render_template('register.html', form=form)
+            return render_template('user/register.html', form=form)
 
         do_login(user) 
         return redirect('/') 
 
     # GET Register Form 
-    return render_template('register.html', form=form)
+    return render_template('user/register.html', form=form)
 
 # GET & POST /login
 @app.route('/login', methods=["GET", "POST"]) 
@@ -91,19 +91,19 @@ def login_user():
         user = User.authenticate(username, password) 
         if user:
             do_login(user)
-            flash(f'Hello, {user.username}', 'success')
+            flash(f'Welcome back, {user.username}', 'success')
             return redirect(f'users/{user.id}')
         flash('Invalid credentials', 'danger')
         return redirect('/login') 
 
     # GET Login Form
-    return render_template('login.html', form=form) 
+    return render_template('user/login.html', form=form) 
 
 # GET /logout 
 @app.route('/logout')
 def logout_user():
     do_logout() 
-    flash('Successfully logged out', 'info')
+    flash('Successfully Logged Out', 'info')
     return redirect('/') 
 
 ##############################################################################
@@ -113,7 +113,7 @@ def logout_user():
 @app.route('/users/<int:user_id>') 
 def user(user_id):
     user = User.query.get_or_404(user_id)
-    return render_template('user.html', user=user)
+    return render_template('user/user.html', user=user)
 
 ##############################################################################
 # VoyageForm 
@@ -121,22 +121,39 @@ def user(user_id):
 # GET & POST /voyage 
 @app.route('/voyage', methods=["GET", "POST"]) 
 def voyage(): 
+    if not g.user: 
+        flash('You do not have access', 'danger')
+        return redirect('/')
     """Display Voyage Form"""
     clubs_choices = [(club.id, club.name) for club in Club.query.order_by('name').all()]
-
     form = VoyageForm() 
     form.start_point.choices = clubs_choices 
     form.end_point.choices = clubs_choices
     # form.end_point.choices = clubs_choices 
     if form.validate_on_submit():
         start_point = form.start_point.data 
-        new_voyage = Voyage(start_point=start_point)
-        db.session.add(new_voyage)
+        end_point = form.end_point.data
+        new_voyage = Voyage(start_point=start_point, end_point=end_point)
+        # db.session.add(new_voyage)
+        g.user.voyage.append(new_voyage)
         db.session.commit() 
         flash('Voyage Created!', 'success')
-        return render_template('result.html')
+        # return render_template('result.html')
+        return redirect('/voyage')
 
-    return render_template('voyage.html', form=form)     
+    # Show voyages 
+    voyages = (Voyage
+                .query
+                .order_by(Voyage.id)
+                .limit(100)
+                .all())
+    return render_template('voyage/voyage.html', form=form, voyages=voyages) 
+
+# GET 
+@app.route('/voyage/<int:voyage_id>') 
+def view_voyage(voyage_id):
+    voyage = Voyage.query.get_or_404(voyage_id)
+    return render_template('voyage/view.html', voyage=voyage)
 
 ##############################################################################
 # Club details 
@@ -146,10 +163,10 @@ def voyage():
 def all_clubs():
     """Display Clubs"""
     clubs = Club.query.order_by(Club.name).all() 
-    return render_template('clubs.html', clubs=clubs)
+    return render_template('club/clubs.html', clubs=clubs)
 
-@app.route('/clubdetails/<int:club_id>')
+@app.route('/clubs/<int:club_id>')
 def each_club(club_id):
     """Display Each Club"""
     club = Club.query.get_or_404(club_id)
-    return render_template('clubdetails.html', club=club)
+    return render_template('club/details.html', club=club)
