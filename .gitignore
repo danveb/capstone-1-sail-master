@@ -2,4 +2,3 @@ venv/
 __pycache__/
 secret.py 
 marinas.py
-capstone-1-schema.png 
