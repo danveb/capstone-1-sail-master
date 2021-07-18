@@ -171,6 +171,20 @@ def view_voyage(voyage_id):
     weather = get_weather(voyage.start.lat, voyage.start.lon)
     return render_template('voyage/view.html', voyage=voyage, weather=weather)
 
+# POST /voyage/delete
+@app.route('/voyage/<int:voyage_id>/delete', methods=["POST"])
+def delete_voyage(voyage_id):
+    """Delete a voyage"""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    voy = Voyage.query.get(voyage_id)
+    db.session.delete(voy)
+    db.session.commit()
+
+    return redirect('/voyage')
+
 ##############################################################################
 # Club details 
 
