@@ -1,11 +1,9 @@
-import os 
-import requests 
-
 from flask import Flask, render_template, redirect, flash, session, g # Flask Global 
 from flask_debugtoolbar import DebugToolbarExtension 
 from sqlalchemy.exc import IntegrityError 
 from forms import RegisterForm, LoginForm, VoyageForm 
 from models import db, connect_db, User, Club, Voyage 
+from helpers import get_weather 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sail_master'
@@ -109,11 +107,25 @@ def logout_user():
 ##############################################################################
 # User details 
 
-# GET /userdetail
+# GET /users/int
 @app.route('/users/<int:user_id>') 
 def user(user_id):
+    """Show a user"""
     user = User.query.get_or_404(user_id)
     return render_template('user/user.html', user=user)
+
+# POST /users/delete 
+@app.route('/users/delete', methods=["POST"])
+def delete_user():
+    """Delete user."""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    do_logout()
+    db.session.delete(g.user)
+    db.session.commit()
+    return redirect("/register")
 
 ##############################################################################
 # VoyageForm 
@@ -135,7 +147,7 @@ def voyage():
         end_point = form.end_point.data
         new_voyage = Voyage(start_point=start_point, end_point=end_point)
         # db.session.add(new_voyage)
-        g.user.voyage.append(new_voyage)
+        g.user.voyage.append(new_voyage) 
         db.session.commit() 
         flash('Voyage Created!', 'success')
         # return render_template('result.html')
@@ -144,6 +156,7 @@ def voyage():
     # Show voyages 
     voyages = (Voyage
                 .query
+                .filter(Voyage.user == g.user) # shows voyages for current user only 
                 .order_by(Voyage.id)
                 .all())
     return render_template('voyage/voyage.html', form=form, voyages=voyages) 
@@ -151,8 +164,12 @@ def voyage():
 # GET 
 @app.route('/voyage/<int:voyage_id>') 
 def view_voyage(voyage_id):
+    if not g.user: 
+        flash('You do not have access', 'danger')
+        return redirect('/')
     voyage = Voyage.query.get_or_404(voyage_id)
-    return render_template('voyage/view.html', voyage=voyage)
+    weather = get_weather(voyage.start.lat, voyage.start.lon)
+    return render_template('voyage/view.html', voyage=voyage, weather=weather)
 
 ##############################################################################
 # Club details 
