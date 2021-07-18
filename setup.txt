@@ -17,7 +17,7 @@ $ echo "python-3.7.9" > runtime.txt
 $ heroku login 
 # heroku create sail-master
 $ git remote -v 
-$ git commit -am "committing"
+$ git commit -m "committing"
 $ git push heroku main (branch is main) 
 
 # For application error when deploying to Heroku? 
