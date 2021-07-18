@@ -6,3 +6,17 @@ $ createdb sail_master
 $ flask run 
 
 Add CSV correctly to db (refer to seed.py)
+
+Heroku Deployment
+$ pip3 install gunicorn 
+$ pip3 freeze > requirements.txt 
+$ echo "web: gunicorn app:app" > Procfile 
+$ echo "python-3.7.9" > runtime.txt
+
+# STEPS (no GitHub repo)
+$ heroku login 
+$ git:remote -a sail-master
+$ git push heroku main (branch is main) 
+
+# For application error when deploying to Heroku? 
+$ heroku logs --tail 
