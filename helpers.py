@@ -1,5 +1,5 @@
 # Helper Functions 
-
+from app import app 
 from secretive import API_SECRETIVE_KEY
 from flask import Flask
 # from models import Voyage 
