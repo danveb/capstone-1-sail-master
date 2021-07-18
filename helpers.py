@@ -1,6 +1,6 @@
 # Helper Functions 
 
-from secrets import API_SECRET_KEY 
+from secrets import API_SECRET_KEY
 from flask import Flask
 # from models import Voyage 
 import requests

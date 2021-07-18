@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from forms import RegisterForm, LoginForm, VoyageForm 
 from models import db, connect_db, User, Club, Voyage 
 from helpers import get_weather 
+from secrets import API_SECRET_KEY 
 # Heroku Deployment 
 import os 
 
