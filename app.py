@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sail_master'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 app.config['SQLALCHEMY_ECHO'] = False
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True 
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False 
 app.config['SECRET_KEY'] = 'ashdjlfkeu9p13ejlkas'
 
 connect_db(app)
@@ -89,6 +89,10 @@ def login_user():
         user = User.authenticate(username, password) 
         if user:
             do_login(user)
+            # set user to Active
+            user.active = True 
+            db.session.add(user)
+            db.session.commit() 
             flash(f'Welcome back, {user.username}', 'success')
             return redirect(f'users/{user.id}')
         flash('Invalid credentials', 'danger')
@@ -111,21 +115,25 @@ def logout_user():
 @app.route('/users/<int:user_id>') 
 def user(user_id):
     """Show a user"""
+    if not g.user:
+        flash('Access denied. Please login', 'danger')
+        return redirect('/login') 
     user = User.query.get_or_404(user_id)
     return render_template('user/user.html', user=user)
 
-# POST /users/delete 
-@app.route('/users/delete', methods=["POST"])
-def delete_user():
-    """Delete user."""
+# POST /users/<int:user_id>/deactivate 
+@app.route('/users/<int:user_id>/deactivate', methods=["POST"])
+def deactivate_user(user_id):
+    """Deactivate user"""
     if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
-
-    do_logout()
-    db.session.delete(g.user)
+        flash('Access unauthorized', 'danger')
+        return redirect('/')
+    user = User.query.get_or_404(user_id)
+    user.active = False 
+    db.session.add(user)
     db.session.commit()
-    return redirect("/register")
+    do_logout() 
+    return redirect('/login') 
 
 ##############################################################################
 # VoyageForm 
