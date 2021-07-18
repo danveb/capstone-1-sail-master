@@ -4,13 +4,19 @@ from sqlalchemy.exc import IntegrityError
 from forms import RegisterForm, LoginForm, VoyageForm 
 from models import db, connect_db, User, Club, Voyage 
 from helpers import get_weather 
+# Heroku Deployment 
+import os 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sail_master'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sail_master'
+# Postgresql for Heroku! 
+app.config['SQLALCHEMY_DATABSAE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://sail_master') 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False 
-app.config['SECRET_KEY'] = 'ashdjlfkeu9p13ejlkas'
+# app.config['SECRET_KEY'] = 'ashdjlfkeu9p13ejlkas'
+# Heroku Deployment (secretkey)
+app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', 'heashdjlfkeu9p13ejlkasllosecret1') 
 
 connect_db(app)
 db.create_all() 
