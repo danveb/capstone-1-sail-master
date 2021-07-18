@@ -23,7 +23,7 @@ CURRENT_USER = 'current_user'
 
 @app.before_request
 def add_user_to_g():
-    """If logged in, add current user to Flask global."""
+    """If logged in, add current user to Flask global"""
 
     if CURRENT_USER in session:
         g.user = User.query.get(session[CURRENT_USER])
@@ -32,23 +32,25 @@ def add_user_to_g():
         g.user = None
 
 def do_login(user):
-    """Log in user."""
+    """Log in user"""
 
     session[CURRENT_USER] = user.id
 
 def do_logout():
-    """Logout user."""
+    """Logout user"""
 
     if CURRENT_USER in session:
         del session[CURRENT_USER]
 
 @app.route('/')
 def home_page():
+    """Show Home Page"""
     return render_template('index.html')
 
 # GET/POST /register
 @app.route('/register', methods=["GET", "POST"])
 def register_user():
+    """User Registration"""
     # RegisterForm instance
     form = RegisterForm() 
     # form data back 
@@ -66,7 +68,7 @@ def register_user():
         try:
             db.session.commit()
         except IntegrityError:
-            flash('Username already taken', 'danger')
+            flash('Username already taken. Please consider a new username', 'danger')
             return render_template('user/register.html', form=form)
 
         do_login(user) 
@@ -78,8 +80,7 @@ def register_user():
 # GET & POST /login
 @app.route('/login', methods=["GET", "POST"]) 
 def login_user():
-    # if "user_id" in session: 
-    #     return redirect(f"/users/{session['user_id']}")
+    """User Login"""
     # LoginForm instance 
     form = LoginForm() 
     if form.validate_on_submit():
@@ -104,8 +105,9 @@ def login_user():
 # GET /logout 
 @app.route('/logout')
 def logout_user():
+    """User Logout"""
     do_logout() 
-    flash('Successfully Logged Out', 'info')
+    flash('Successfully logged out', 'info')
     return redirect('/') 
 
 ##############################################################################
@@ -114,7 +116,7 @@ def logout_user():
 # GET /users/int
 @app.route('/users/<int:user_id>') 
 def user(user_id):
-    """Show a user"""
+    """Show User"""
     if not g.user:
         flash('Access denied. Please login', 'danger')
         return redirect('/login') 
@@ -124,7 +126,7 @@ def user(user_id):
 # POST /users/<int:user_id>/deactivate 
 @app.route('/users/<int:user_id>/deactivate', methods=["POST"])
 def deactivate_user(user_id):
-    """Deactivate user"""
+    """Deactivate User"""
     if not g.user:
         flash('Access unauthorized', 'danger')
         return redirect('/')
@@ -141,15 +143,14 @@ def deactivate_user(user_id):
 # GET & POST /voyage 
 @app.route('/voyage', methods=["GET", "POST"]) 
 def voyage(): 
-    if not g.user: 
-        flash('You do not have access', 'danger')
-        return redirect('/')
     """Display Voyage Form"""
+    if not g.user: 
+        flash('Sorry, you do not have access to this page', 'danger')
+        return redirect('/')
     clubs_choices = [(club.id, club.name) for club in Club.query.order_by('name').all()]
     form = VoyageForm() 
     form.start_point.choices = clubs_choices 
     form.end_point.choices = clubs_choices
-    # form.end_point.choices = clubs_choices 
     if form.validate_on_submit():
         start_point = form.start_point.data 
         end_point = form.end_point.data
@@ -158,7 +159,6 @@ def voyage():
         g.user.voyage.append(new_voyage) 
         db.session.commit() 
         flash('Voyage Created!', 'success')
-        # return render_template('result.html')
         return redirect('/voyage')
 
     # Show voyages 
@@ -169,17 +169,18 @@ def voyage():
                 .all())
     return render_template('voyage/voyage.html', form=form, voyages=voyages) 
 
-# GET 
+# GET /voyage/voyage_id
 @app.route('/voyage/<int:voyage_id>') 
 def view_voyage(voyage_id):
+    """Show a Voyage"""
     if not g.user: 
-        flash('You do not have access', 'danger')
+        flash('Sorry, you do not have access to this page', 'danger')
         return redirect('/')
     voyage = Voyage.query.get_or_404(voyage_id)
     weather = get_weather(voyage.start.lat, voyage.start.lon)
     return render_template('voyage/view.html', voyage=voyage, weather=weather)
 
-# POST /voyage/delete
+# POST /voyage/voyage_id/delete
 @app.route('/voyage/<int:voyage_id>/delete', methods=["POST"])
 def delete_voyage(voyage_id):
     """Delete a voyage"""
