@@ -18,6 +18,8 @@ class User(db.Model):
     email = db.Column(db.String(20), unique=True, nullable=False)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False) 
+    # Active user?
+    active = db.Column(db.Boolean, default=True, nullable=False)
     # Relationships
     voyage = db.relationship('Voyage', backref='users', cascade='all') 
 
