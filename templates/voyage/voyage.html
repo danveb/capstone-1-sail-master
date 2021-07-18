@@ -30,6 +30,7 @@
 <br>
 
 <div class="container">
+    {% if voyages %}
     <h5 class="display-5">Voyage Details</h5>
     <table class="table table-striped ">
       <thead class="thead-dark">
@@ -51,6 +52,7 @@
         {% endfor %}
       </tbody>
     </table>
+    {% endif %}
 </div>
 
 {% endblock %}
