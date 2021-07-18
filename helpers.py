@@ -1,15 +1,15 @@
 # Helper Functions 
 
-from secret import API_KEY 
+from secret import API_SECRET_KEY 
 from flask import Flask
 # from models import Voyage 
-import requests 
+import requests
 
 app = Flask(__name__) 
 
 def get_weather(lat, lon):
     """Get Today's Weather""" 
-    URL = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=alerts,minutely,current,hourly&units=metric&appid={API_KEY}'
+    URL = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=alerts,minutely,current,hourly&units=metric&appid={API_SECRET_KEY}'
 
     response = requests.get(URL)
 
