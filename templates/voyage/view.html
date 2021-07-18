@@ -1,13 +1,43 @@
 {% extends 'base.html' %}
-
+{% block title %}Voyage Details{% endblock %}
 {% block content %}
 
-<!-- <h5 class="display-5">Sailing Clubs</h5>
+<h5 class="display-5">Voyage # {{voyage.id}}</h5>
 
-<ul>
-    {% for club in clubs %}
-    <li><a href="clubs/{{ club.id }}">{{ club.name }}</a></li>
-    {% endfor %}
-</ul> -->
+<br>
+
+<p class="lead">
+    Start Point: {{ voyage.start.name }}<br>
+    Latitude: {{ voyage.start.lat}}<br>
+    Longitude: {{ voyage.start.lon}}
+</p>
+
+<p class="lead">
+    End Point: {{ voyage.end.name }}<br>
+    Latitude: {{ voyage.end.lat}}<br>
+    Longitude: {{ voyage.end.lon}}
+</p>
+
+<p class="lead">
+    Expected Max Temperature: {{weather['max_temp']}}&#8451; <br>
+    Expected Min Temperature: {{weather['min_temp']}}&#8451; <br>
+    Expected Humidity: {{weather['humidity']}}% <br>
+    Expected Wind Speed: {{weather['wind_speed']}} kn <br>
+    Expected Wind Deg: {{weather['wind_deg']}}<br>
+    Expected Conditions: {{weather['condition']}} <br>
+</p>
+
+<p class="lead"><strong><i>
+    Sailing Advice: 
+    {% if weather['wind_speed'] > 12%}
+    Conditions are dangerous. Please reconsider sailing for next time. <br> 
+    {% elif weather['wind_speed'] > 9 %}
+    Wind is fairly strong. Please exercise extra caution today. <br>
+    {% elif weather['wind_speed'] > 5 %}
+    Wind is fair today. <br>
+    {% elif weather['wind_speed'] < 5 %}
+    Wind is calm. You will have a great sailing!<br> 
+    {% endif %}
+</strong></i></p>
 
 {% endblock %}
