@@ -10,7 +10,7 @@ import os
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sail_master'
 # Postgresql for Heroku! 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql:///sail_master') 
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://sail_master') 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False 
