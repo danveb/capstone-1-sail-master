@@ -18,21 +18,24 @@ $ heroku login
 # heroku create sail-master
 $ git remote -v 
 $ git commit -m "committing"
-$ git push heroku main (branch is main) 
+$ git push heroku main (push only to heroku) 
+$ git push origin main (push only to Github) 
 
 # For application error when deploying to Heroku? 
 $ heroku logs --tail 
 
 # Environment Variables
-# - since we're on a different server we need different environment variables values: 
+# since we're on a different server we need different environment variables values: 
 $ heroku config:set SECRET_KEY=heashdjlfkeu9p13ejlkasllosecret1 FLASK_ENV=production
 $ heroku config # see all environment variables 
 
 # Add a Postgres Database 
-# - In order to use a production database we need Heroku to make one: 
+# In order to use a production database we need Heroku to make one: 
 $ heroku addons:create heroku-postgresql:hobby-dev
 $ heroku config 
 
 # Connect psql on Heroku 
 $ heroku pg:psql 
 $ heroku run python3 seed.py 
+
+$ heroku open 
