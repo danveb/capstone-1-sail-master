@@ -8,15 +8,15 @@ from helpers import get_weather
 import os 
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sail_master'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sail_master'
 # Postgresql for Heroku! 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://sail_master') 
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://sail_master') 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False 
-# app.config['SECRET_KEY'] = 'ashdjlfkeu9p13ejlkas'
+app.config['SECRET_KEY'] = 'ashdjlfkeu9p13ejlkas'
 # Heroku Deployment (secretkey)
-app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', 'heashdjlfkeu9p13ejlkasllosecret1') 
+# app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', 'heashdjlfkeu9p13ejlkasllosecret1') 
 
 connect_db(app)
 db.create_all() 
@@ -51,7 +51,16 @@ def do_logout():
 @app.route('/')
 def home_page():
     """Show Home Page"""
-    return render_template('index.html')
+    if not g.user or not g.user.active: 
+        return redirect('/limited')
+    return render_template('index.html') 
+
+@app.route('/limited')
+def limited_home_page():
+    """Show Limited Home Page for users that did not register or have deactivated accounts."""
+    if g.user and g.user.active: 
+        return redirect('/')
+    return render_template('limited/index.html')
 
 # GET/POST /register
 @app.route('/register', methods=["GET", "POST"])
@@ -68,13 +77,13 @@ def register_user():
         last_name = form.last_name.data 
         # error handling? 
         user = User.register(username, password, email, first_name, last_name)
-
+        user.active = True 
         # db
         db.session.add(user) 
         try:
             db.session.commit()
         except IntegrityError:
-            flash('Username already taken. Please consider a new username', 'danger')
+            flash('Username already taken. Please consider a new username.', 'danger')
             return render_template('user/register.html', form=form)
 
         do_login(user) 
@@ -96,13 +105,17 @@ def login_user():
         user = User.authenticate(username, password) 
         if user:
             do_login(user)
+            if not user.active:
+                flash(f'Welcome back, {user.username}.', 'success')
+                return redirect('/limited')
             # set user to Active
             user.active = True 
             db.session.add(user)
             db.session.commit() 
-            flash(f'Welcome back, {user.username}', 'success')
+            flash(f'Welcome back, {user.username}.', 'success')
             return redirect(f'users/{user.id}')
-        flash('Invalid credentials', 'danger')
+            
+        flash('Invalid credentials.', 'danger')
         return redirect('/login') 
 
     # GET Login Form
@@ -113,8 +126,8 @@ def login_user():
 def logout_user():
     """User Logout"""
     do_logout() 
-    flash('Successfully logged out', 'info')
-    return redirect('/') 
+    flash('Successfully logged out.', 'info')
+    return redirect('/limited') 
 
 ##############################################################################
 # User details 
@@ -124,8 +137,10 @@ def logout_user():
 def user(user_id):
     """Show User"""
     if not g.user:
-        flash('Access denied. Please login', 'danger')
+        flash('Access denied. Please login.', 'danger')
         return redirect('/login') 
+    elif not g.user.active: 
+        return redirect('limited') 
     user = User.query.get_or_404(user_id)
     return render_template('user/user.html', user=user)
 
@@ -134,14 +149,42 @@ def user(user_id):
 def deactivate_user(user_id):
     """Deactivate User"""
     if not g.user:
-        flash('Access unauthorized', 'danger')
-        return redirect('/')
+        flash('Access unauthorized.', 'danger')
+        return redirect('/limited')
     user = User.query.get_or_404(user_id)
     user.active = False 
     db.session.add(user)
     db.session.commit()
     do_logout() 
     return redirect('/login') 
+
+##############################################################################
+# Limited details 
+
+# GET /users/int
+@app.route('/limited/<int:user_id>') 
+def limited_user(user_id):
+    """Show User"""
+    if not g.user:
+        flash('Access denied. Please login.', 'danger')
+        return redirect('/login') 
+    elif g.user.active: 
+        return redirect(f'/users/{user_id}') 
+    user = User.query.get_or_404(user_id)
+    return render_template('limited/user.html', user=user)
+
+# POST /users/<int:user_id>/activate 
+@app.route('/limited/<int:user_id>/activate', methods=["POST"])
+def activate(user_id):
+    """Activate User"""
+    if not g.user:
+        flash('Access unauthorized.', 'danger')
+        return redirect('/limited')
+    user = User.query.get_or_404(user_id)
+    user.active = True 
+    db.session.add(user)
+    db.session.commit()
+    return redirect('/') 
 
 ##############################################################################
 # VoyageForm 
@@ -151,8 +194,11 @@ def deactivate_user(user_id):
 def voyage(): 
     """Display Voyage Form"""
     if not g.user: 
-        flash('Sorry, you do not have access to this page', 'danger')
-        return redirect('/')
+        flash('Sorry, you do not have access to this page.', 'danger')
+        return redirect('/limited')
+    elif not g.user.active: 
+        flash('Your account is deactivated. Please consider to activate your account.', 'info') 
+        return redirect('/limited') 
     clubs_choices = [(club.id, club.name) for club in Club.query.order_by('name').all()]
     form = VoyageForm() 
     form.start_point.choices = clubs_choices 
@@ -180,8 +226,11 @@ def voyage():
 def view_voyage(voyage_id):
     """Show a Voyage"""
     if not g.user: 
-        flash('Sorry, you do not have access to this page', 'danger')
+        flash('Sorry, you do not have access to this page.', 'danger')
         return redirect('/')
+    elif not g.user.active: 
+        flash('Your account is deactivated. Please consider to activate your account.', 'info') 
+        return redirect('/limited') 
     voyage = Voyage.query.get_or_404(voyage_id)
     weather = get_weather(voyage.start.lat, voyage.start.lon)
     return render_template('voyage/view.html', voyage=voyage, weather=weather)
@@ -192,7 +241,7 @@ def delete_voyage(voyage_id):
     """Delete a voyage"""
     if not g.user:
         flash("Access unauthorized.", "danger")
-        return redirect("/")
+        return redirect("/limited")
 
     voy = Voyage.query.get(voyage_id)
     db.session.delete(voy)
