@@ -2,9 +2,9 @@
 {% block title %}User Details{% endblock %}
 {% block content %}
 
-<div class="container">
+<div class="container user-container">
     <h5 class="display-5">{{user.first_name}} {{user.last_name}} Details</h5>
-    <table class="table table-striped ">
+    <table class="table table-striped user-details">
       <thead class="thead-dark">
         <th>Username</th>
         <th>Email</th>
@@ -21,7 +21,6 @@
       </tbody>
     </table>
     <form>
-      <a href="/logout" class="btn btn-primary">Logout</a>
       <button formaction="/users/{{ user.id }}/deactivate" formmethod="POST" class="btn btn-danger">Deactivate Account</button>
     </form>
 
