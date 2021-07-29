@@ -1,13 +1,13 @@
 # Helper Functions 
 from flask import Flask
-from secretkey import HIDDEN_SECRET_KEY
+# from secretkey import HIDDEN_SECRET_KEY
 import requests
 
 app = Flask(__name__) 
 
 def get_weather(lat, lon):
     """Get Today's Weather""" 
-    URL = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=alerts,minutely,current,hourly&units=metric&appid={HIDDEN_SECRET_KEY}'
+    URL = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=alerts,minutely,current,hourly&units=metric&appid=8fc4d6f3f7c922e3476f07c266677ab7'
 
     response = requests.get(URL)
 
