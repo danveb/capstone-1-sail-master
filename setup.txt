@@ -21,6 +21,9 @@ $ git commit -m "committing"
 $ git push heroku main (push only to heroku) 
 $ git push origin main (push only to Github) 
 
+# HIDDEN API KEY 
+# make sure to have API KEY visibile in application for HEROKU only 
+
 # For application error when deploying to Heroku? 
 $ heroku logs --tail 
 
