@@ -12,10 +12,6 @@ User can create a voyage (start-point and end-point) and based on weather condit
 
 Wind speed is the main safety measure this application reads in order to provide a recommendation to sailors. 
 
-Using Python 3.7.9 with Flask, SQLAlchemy, WTForms. Database is through PostgreSQL and Heroku for deployment. 
-
-**Happy Sailing!**
-
 > Steps to run locally
 
 1. Run virtual environment 
@@ -42,3 +38,6 @@ Using Python 3.7.9 with Flask, SQLAlchemy, WTForms. Database is through PostgreS
 > Technology
 * Using Python 3.7.9 with Flask, SQLAlchemy, WTForms
 * PostgreSQL for database 
+
+
+### **Happy Sailing!**
