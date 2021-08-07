@@ -29,7 +29,7 @@ Wind speed is the main safety measure this application reads in order to provide
 * `[1] %run app.py`
 * `[2] %run seed.py`
 
-1. Run Flask 
+5. Run Flask 
 * `$ flask run`
 
 > API
